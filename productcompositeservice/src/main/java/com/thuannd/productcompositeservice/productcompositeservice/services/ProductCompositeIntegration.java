@@ -48,18 +48,9 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
         @Value("${app.review-service.host}")String reviewServiceHost,
         @Value("${app.review-service.port}")int reviewServicePort
     ){
-        this.productServiceUrl = "http://" + productServiceHost + ":" + productServicePort + "/product/";
-        this.recommendationServiceUrl = "http://" + recommendationServiceHost + ":" + recommendationServicePort + "/recommendation/";
-        this.reviewServiceUrl = "http://" + reviewServiceHost + ":" + reviewServicePort + "/review/";
-    }
-
-    private String getErrorMessage(HttpClientErrorException ex){
-        try {
-            return mapper.readValue(
-                ex.getResponseBodyAsString(), HttpErrorInfo.class).getMessage();
-        } catch (IOException e) {
-            return ex.getMessage();
-        }
+        this.productServiceUrl = "http://" + productServiceHost + ":" + productServicePort + "/product";
+        this.recommendationServiceUrl = "http://" + recommendationServiceHost + ":" + recommendationServicePort + "/recommendation";
+        this.reviewServiceUrl = "http://" + reviewServiceHost + ":" + reviewServicePort + "/review";
     }
 
     @Override
@@ -119,14 +110,93 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
 
     @Override
     public Product createProduct(Product product) {
-        // TODO Auto-generated method stub
-        return null;
+        LOG.debug("Will post a new product to URL: {}", productServiceUrl);
+        try{
+            Product productToAdd = restTemplate.postForObject(productServiceUrl, product, Product.class);
+            return productToAdd;
+        }catch(HttpClientErrorException ex){
+            throw handleHttpClientException(ex);
+        }
     }
 
     @Override
     public void deleteProduct(Integer id) {
-        // TODO Auto-generated method stub
+        String url = productServiceUrl + "/" + id;
+        LOG.debug("tries to delete product with productId = {} on URL: {}", id, url);
+        try{
+            restTemplate.delete(url);
+        }catch(HttpClientErrorException ex){
+            throw handleHttpClientException(ex);
+        }
+    }
 
+    @Override
+    public Review createReview(Review review) {
+        LOG.debug("Will post a new review for product with productId = {}", review.getProductId());
+        try{
+            Review reviewToAdd = restTemplate.postForObject(reviewServiceUrl, review, Review.class);
+            return reviewToAdd;
+        }catch(HttpClientErrorException ex){
+            throw handleHttpClientException(ex);
+        }
+    }
+
+    @Override
+    public void delereReview(Integer productId) {
+        String url = reviewServiceUrl + "/" + productId;
+        LOG.debug("tries to delete reviews for productId = {} on URL: {}", productId, url);
+        try{
+            restTemplate.delete(url);
+        }catch(HttpClientErrorException ex){
+            throw handleHttpClientException(ex);
+        }
+    }
+
+    @Override
+    public Recommendation createRecommendation(Recommendation recommendation) {
+        LOG.debug("Will post a new recommendation for productId = : {} on URL: {}", recommendation.getProductId(), recommendationServiceUrl);
+        try{
+            Recommendation recommendationToAdd = restTemplate.postForObject(recommendationServiceUrl, recommendation, Recommendation.class);
+            return recommendationToAdd;
+        }catch(HttpClientErrorException ex){
+            throw handleHttpClientException(ex);
+        }
+    }
+
+    @Override
+    public void deleteRecommendation(Integer productId) {
+        String url = recommendationServiceUrl + "/" + productId;
+        LOG.debug("tries to delete recommendations for productId = {} on URL: {}", productId, url);
+        try{
+            restTemplate.delete(url);
+        }catch(HttpClientErrorException ex){
+            throw handleHttpClientException(ex);
+        }
+    }
+
+    private RuntimeException handleHttpClientException(HttpClientErrorException ex) {
+        switch (ex.getStatusCode()) {
+
+        case NOT_FOUND:
+            return new NotFoundException(getErrorMessage(ex));
+
+        case UNPROCESSABLE_ENTITY :
+            return new InvalidInputException(getErrorMessage(ex));
+
+        default:
+            LOG.warn("Got a unexpected HTTP error: {}, will rethrow it", ex.getStatusCode());
+            LOG.warn("Error body: {}", ex.getResponseBodyAsString());
+            return ex;
+        }
+    }
+
+    private String getErrorMessage(HttpClientErrorException ex){
+        try {
+            return mapper.readValue(
+                ex.getResponseBodyAsString(), HttpErrorInfo.class).getMessage();
+        } catch (IOException e) {
+            return ex.getMessage();
+        }
     }
 
 }

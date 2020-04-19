@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.thuannd.api.api.core.recommendation.Recommendation;
 import com.thuannd.api.api.core.recommendation.RecommendationService;
+import com.thuannd.recommendationservice.recommendationservice.persistence.RecommendationEntity;
+import com.thuannd.recommendationservice.recommendationservice.persistence.RecommendationRepository;
 import com.thuannd.util.util.exceptions.InvalidInputException;
 import com.thuannd.util.util.http.ServiceUtil;
 
@@ -20,6 +22,9 @@ public class RecommandationServiceImpl implements RecommendationService {
 
     @Autowired
     private ServiceUtil serviceUtil;
+
+    @Autowired
+    private RecommendationRepository recommendationRepository;
 
     @Override
     public List<Recommendation> getRecommendations(int productId) {
@@ -37,6 +42,21 @@ public class RecommandationServiceImpl implements RecommendationService {
         LOG.debug("/recommendation response size: {}", list.size());
 
         return list;
+    }
+
+    @Override
+    public Recommendation createRecommendation(Recommendation recommendation) {
+        RecommendationEntity recommendationEntity = RecommendationMapper.INSTANCE.apiToEntity(recommendation);
+        RecommendationEntity newEntity = recommendationRepository.save(recommendationEntity);
+
+        LOG.info("create recommendation with recommendationId {}", newEntity.getRecommendationId());
+
+        return RecommendationMapper.INSTANCE.entityToApi(newEntity);
+    }
+
+    @Override
+    public void deleteRecommendation(Integer productId) {
+        recommendationRepository.deleteAll(recommendationRepository.findByProductId(productId));
     }
 
 }

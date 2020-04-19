@@ -65,4 +65,16 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
         reviewSummaries, serviceAddesses);
     }
 
+    @Override
+    public void createCompositeProduct(ProductAggregate productAggregate) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void deleteCompositeProduct(Integer productId) {
+        // TODO Auto-generated method stub
+
+    }
+
 }
