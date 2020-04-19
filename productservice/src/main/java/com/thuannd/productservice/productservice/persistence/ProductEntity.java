@@ -2,18 +2,16 @@ package com.thuannd.productservice.productservice.persistence;
 
 import java.io.Serializable;
 
-import javax.persistence.Id;
-import javax.persistence.Version;
-
+import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collation = "products")
+@Document(collection = "products")
 public class ProductEntity implements Serializable{
 
     private static final long serialVersionUID = 1L;
 
-    @Id
+    @org.springframework.data.annotation.Id
     private String id;
     @Version
     private Long version;

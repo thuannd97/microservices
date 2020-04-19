@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-DemoApplication<productservice>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "mainClass": "com.thuannd.productservice.productservice.DemoApplication",
+            "projectName": "productservice",
+            "args": ""
+        }
+    ]
+}

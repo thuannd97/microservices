@@ -16,8 +16,11 @@ public class ServiceUtil {
     private String port;
     private String serviceAddress = null;
 
-    @Autowired
-    public ServiceUtil(@Value("${server.port}") String port){
+    public ServiceUtil(){
+        
+    }
+
+    public ServiceUtil(String port){
         this.port = port;
     }
 

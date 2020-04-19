@@ -2,14 +2,17 @@ package com.thuannd.reviewservice.reviewservice.persistence;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.persistence.Version;
 
 @Entity
-public class ReviewEntity implements Serializable{
+@Table(name = "review")
+public class ReviewEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -19,10 +22,15 @@ public class ReviewEntity implements Serializable{
     @Version
     private Integer version;
 
+    @Column(name = "product_id")
     private int productId;
+    @Column(name = "review_id")
     private int reviewId;
+    @Column(name = "author")
     private String author;
+    @Column(name = "subject")
     private String subject;
+    @Column(name = "content")
     private String content;
 
     public ReviewEntity() {

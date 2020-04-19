@@ -7,7 +7,7 @@ import javax.persistence.Version;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document
+@Document(collation = "recommendations")
 public class RecommendationEntity implements Serializable{
 
     private static final long serialVersionUID = 1L;
