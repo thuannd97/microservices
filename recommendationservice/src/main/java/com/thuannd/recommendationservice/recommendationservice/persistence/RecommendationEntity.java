@@ -2,9 +2,8 @@ package com.thuannd.recommendationservice.recommendationservice.persistence;
 
 import java.io.Serializable;
 
-import javax.persistence.Id;
-import javax.persistence.Version;
-
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collation = "recommendations")
